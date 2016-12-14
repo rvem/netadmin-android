@@ -10,7 +10,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String INTENT_FILTER = "NETWORKSTATE";
+    public static final String INTENT_FILTER = "NETWORK_STATE_CHANGED";
+
+    public static final String FILENAME = "config.cfg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onScanClick(View view) {
-
     }
 
     public void onGetClick(View view) {

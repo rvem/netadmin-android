@@ -11,18 +11,31 @@ import java.net.InetAddress;
 public class Computer {
     private int id;
     private String ip;
+    private String name;
     private State state;
+
     public Computer(int id, String ip) {
+        this(id, ip, State.OFFLINE);
+    }
+
+    public Computer(int id, String ip, State state) {
         this.id = id;
         this.ip = ip;
-        this.state = State.OFFLINE;
+        this.state = state;
     }
+
     public String getIP() {
         return ip;
     }
+
+    public int getId() {
+        return id;
+    }
+
     public void setState(State state) {
         this.state = state;
     }
+
     public State getState() {
         return this.state;
     }
