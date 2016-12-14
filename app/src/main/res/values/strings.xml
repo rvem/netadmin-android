@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Netadmin</string>
+    <string name="scan">Scan</string>
+    <string name="refresh">Refresh</string>
+    <string name="get_from_config">Get from config</string>
+    <string name="save_config">Save config</string>
 </resources>

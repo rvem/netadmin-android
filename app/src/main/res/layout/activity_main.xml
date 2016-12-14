@@ -8,11 +8,33 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:gravity="center_horizontal"
     tools:context="com.androidproject.netadmin.netadmin.MainActivity">
 
-    <ScrollView
-        android:id="@+id/halls"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/scanButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/scan"
+            android:onClick="onScanClick"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/get_from_config"
+            android:onClick="onGetClick"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save_config"/>
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     </ScrollView>
+
+
 </RelativeLayout>
