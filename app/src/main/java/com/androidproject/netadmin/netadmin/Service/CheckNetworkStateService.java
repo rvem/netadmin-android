@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.androidproject.netadmin.netadmin.MainActivity;
 import com.androidproject.netadmin.netadmin.Utils.State;
@@ -55,11 +56,11 @@ public class CheckNetworkStateService extends Service {
             BufferedReader inputStream = new BufferedReader(
                     new InputStreamReader(p.getInputStream()));
             if (inputStream.readLine() != null) {
-                System.out.println("Successful ping");
+                Log.d(TAG, "Successful ping");
                 inputStream.close();
                 return true;
             } else {
-                System.out.println("Cannot ping");
+                Log.d(TAG, "Failed ping");
                 inputStream.close();
                 return false;
             }
@@ -69,4 +70,6 @@ public class CheckNetworkStateService extends Service {
         }
         return false;
     }
+
+    private static final String TAG = "Check network state";
 }
