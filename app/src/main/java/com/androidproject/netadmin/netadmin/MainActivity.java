@@ -1,0 +1,19 @@
+package com.androidproject.netadmin.netadmin;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+
+import com.androidproject.netadmin.netadmin.model.Computer;
+
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
+
+    public static final String INTENT_FILTER = "NETWORKSTATE";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+}
