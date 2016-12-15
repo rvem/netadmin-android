@@ -16,14 +16,14 @@ import java.util.ArrayList;
  */
 
 public final class ConfigUtils {
-    public final ArrayList<Computer> getConfig(File file) {
+    public static ArrayList<Computer> getConfig(File file) {
         ArrayList<Computer> devices = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] args = line.split(" ");
-                devices.add(new Computer(Integer.parseInt(args[0]), args[1]));
+                devices.add(new Computer(Integer.parseInt(args[0]), args[1], args[2]));
             }
         } catch (Exception e) {
             Log.e(TAG, "catch exception", e);
@@ -31,7 +31,7 @@ public final class ConfigUtils {
         return devices;
     }
 
-    public final void setConfig(ArrayList<Computer> devices, File file) {
+    public static void setConfig(ArrayList<Computer> devices, File file) {
         try {
             FileWriter writer = new FileWriter(file);
             for (Computer device : devices) {
@@ -42,5 +42,7 @@ public final class ConfigUtils {
             Log.e(TAG, "catch exception", e);
         }
     }
+
+    private ConfigUtils(){}
     private static final String TAG = "File :";
 }

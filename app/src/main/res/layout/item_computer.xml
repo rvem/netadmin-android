@@ -5,25 +5,33 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:background="@android:color/holo_green_light">
         <TextView
             android:id="@+id/Number"
-            android:text="0"
+            android:text="@string/_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin" />
+        <TextView
+            android:id="@+id/Name"
+            android:text="@string/basic_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin" />
         <TextView
             android:id="@+id/IP"
-            android:text="127.0.0.1"
+            android:text="@string/basic_ip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"/>
         <TextView
-            android:text="state"
+            android:text="@string/state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"

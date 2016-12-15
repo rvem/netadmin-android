@@ -4,4 +4,8 @@
     <string name="refresh">Refresh</string>
     <string name="get_from_config">Get from config</string>
     <string name="save_config">Save config</string>
+    <string name="basic_name">basic name</string>
+    <string name="basic_ip">127.0.0.1</string>
+    <string name="state">state</string>
+    <string name="_0">0</string>
 </resources>
