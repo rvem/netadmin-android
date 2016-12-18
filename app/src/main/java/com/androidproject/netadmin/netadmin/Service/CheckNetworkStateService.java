@@ -9,6 +9,7 @@ import android.util.Log;
 import com.androidproject.netadmin.netadmin.MainActivity;
 import com.androidproject.netadmin.netadmin.Utils.NetworkUtils;
 import com.androidproject.netadmin.netadmin.Utils.State;
+import com.androidproject.netadmin.netadmin.model.Color;
 import com.androidproject.netadmin.netadmin.model.Computer;
 
 import java.util.ArrayList;

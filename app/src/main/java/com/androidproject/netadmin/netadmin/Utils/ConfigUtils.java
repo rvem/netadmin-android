@@ -2,6 +2,7 @@ package com.androidproject.netadmin.netadmin.Utils;
 
 import android.util.Log;
 
+import com.androidproject.netadmin.netadmin.model.Color;
 import com.androidproject.netadmin.netadmin.model.Computer;
 
 import java.io.BufferedReader;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 
 /**
  * Created by roman on 14.12.16.
+ *
+ * Changed by Anna Kopeliovich on 18.12.16.
  */
 
 public final class ConfigUtils {
@@ -23,7 +26,7 @@ public final class ConfigUtils {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] args = line.split(" ");
-                devices.add(new Computer(Integer.parseInt(args[0]), args[1], args[2]));
+                devices.add(new Computer(Integer.parseInt(args[0]), args[1], args[2], Color.GOOD));
             }
         } catch (Exception e) {
             Log.e(TAG, "catch exception", e);

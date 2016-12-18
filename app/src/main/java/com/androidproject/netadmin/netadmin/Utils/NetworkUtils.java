@@ -11,6 +11,8 @@ import java.util.ArrayList;
 
 /**
  * Created by roman on 14.12.16.
+ *
+ * Changed by Anna Kopeliovich on 18.12.16
  */
 
 public final class NetworkUtils {
@@ -19,6 +21,7 @@ public final class NetworkUtils {
 
             if (InetAddress.getByName(ip).isReachable(100)) {
                 Log.d(TAG, ip + " Successful ping");
+                return true;
             } else {
                 Log.d(TAG, ip + " Failed ping");
                 return false;
