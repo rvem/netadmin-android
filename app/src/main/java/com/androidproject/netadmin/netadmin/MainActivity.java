@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private RecyclerView recyclerView;
 
+    private ComputerAdapter adapter = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         devices = new ArrayList<>();
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ComputerAdapter adapter = new ComputerAdapter(this);
+        adapter = new ComputerAdapter(this);
         adapter.setComputers(devices);
         recyclerView.setAdapter(adapter);
     }
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void run() {
                 String basicIP = "192.168.1.";
+//                String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
                 for (int i = 1; i < 255; i++) {
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         } else {
+            adapter.setComputers(devices);
             ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
             adapter.setComputers(devices);
             recyclerView.setAdapter(adapter);
@@ -97,9 +101,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         File configFile = new File(getFilesDir(), FILENAME);
         if (configFile.exists()) {
             devices = ConfigUtils.getConfig(configFile);
-            ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
             adapter.setComputers(devices);
-            recyclerView.setAdapter(adapter);
         } else {
             Log.d(TAG, "Config file not found");
             String text = "Config file not found";
@@ -127,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onRefresh() {
         final String TAG = "On swipe ";
         swipe.setRefreshing(true);
-
         swipe.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -135,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     Log.d(TAG, "Computers in network not found");
                     String text = "Computers in network not found";
                     int duration = Toast.LENGTH_SHORT;
-                    Context context = getApplicationContext();
-                    Toast toast = Toast.makeText(context, text, duration);
+                    Toast toast = Toast.makeText(getApplicationContext(), text, duration);
                     toast.show();
                 } else {
 
@@ -153,17 +153,19 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                                     device.setState(State.OFFLINE);
                                 }
                             }
-                            ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
-                            adapter.setComputers(devices);
-                            recyclerView.setAdapter(adapter);
-                            swipe.setRefreshing(false);
                         }
                     }
 
-                    new Thread(new Scan()).start();
+                    Thread thread = new Thread(new Scan());
+                    thread.start();
+
+                    while (thread.isAlive());
+                    if (!devices.isEmpty()) {
+                        adapter.setComputers(devices);
+                    }
                 }
             }
         }, 3000);
-
+        swipe.setRefreshing(false);
     }
 }
