@@ -52,6 +52,74 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<String> names = new ArrayList<String>(devices.size());
+        ArrayList<String> ip = new ArrayList<String>(devices.size());
+        ArrayList<Integer> num = new ArrayList<Integer>(devices.size());
+        ArrayList<String> state = new ArrayList<String>(devices.size());
+        ArrayList<String> color = new ArrayList<String>(devices.size());
+        int ind = 0;
+        for (Computer device : devices) {
+            names.add(ind, device.getName());
+            ip.add(ind, device.getIP());
+            num.add(ind, device.getId());
+            state.add(ind, device.getState().toString());
+            color.add(ind, device.getColor().toString());
+            ind++;
+        }
+        outState.putStringArrayList("name", names);
+        outState.putStringArrayList("ip", ip);
+        outState.putStringArrayList("state", state);
+        outState.putStringArrayList("color", color);
+        outState.putIntegerArrayList("num", num);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        ArrayList<String> names = savedInstanceState.getStringArrayList("name");
+        ArrayList<String> ip = savedInstanceState.getStringArrayList("ip");
+        ArrayList<Integer> num = savedInstanceState.getIntegerArrayList("num");
+        ArrayList<String> states = savedInstanceState.getStringArrayList("state");
+        ArrayList<String> colors = savedInstanceState.getStringArrayList("color");
+        int ind = 0;
+        ArrayList<Computer> add = new ArrayList<Computer>();
+        for (Integer id : num) {
+            String nameState = states.get(ind);
+            State state = (nameState == "ONLINE") ? State.ONLINE : State.OFFLINE;
+            String nameColor = colors.get(ind);
+            Color color = null;
+            switch (nameColor) {
+                case "GOOD":
+                    color = Color.GOOD;
+                    break;
+                case "BAD":
+                    color = Color.BAD;
+                    break;
+                case "FAIL":
+                    color = Color.FAIL;
+                    break;
+                case "WAIT":
+                    color = Color.WAIT;
+                    break;
+            }
+
+            add.add(new Computer(id, ip.get(ind), names.get(ind), state, color));
+            ind++;
+        }
+        devices = add;
+        adapter = new ComputerAdapter(this);
+        adapter.setComputers(devices);
+        recyclerView.setAdapter(adapter);
+
+    }
+
     public void onScanClick(View view) {
         final String TAG = "On scan click ";
         class Scan implements Runnable {
@@ -64,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
-                for (int i = 1; i < 255; i++) {
+                for (int i = 1; i < 4; i++) {
                     String ip = basicIP + Integer.toString(i);
                     if (ping(ip)) {
                         String name;
