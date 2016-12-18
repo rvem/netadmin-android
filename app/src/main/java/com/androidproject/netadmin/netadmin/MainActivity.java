@@ -83,14 +83,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             Log.d(TAG, "Computers in network not found");
             String text = "Not find computers in network";
             int duration = Toast.LENGTH_SHORT;
-            Context context = getApplicationContext();
-            Toast toast = Toast.makeText(context, text, duration);
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
             toast.show();
         } else {
             adapter.setComputers(devices);
-            ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
-            adapter.setComputers(devices);
-            recyclerView.setAdapter(adapter);
         }
 
     }
@@ -106,8 +102,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             Log.d(TAG, "Config file not found");
             String text = "Config file not found";
             int duration = Toast.LENGTH_SHORT;
-            Context context = getApplicationContext();
-            Toast toast = Toast.makeText(context, text, duration);
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
             toast.show();
         }
     }
@@ -119,8 +114,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             Log.d(TAG, "Nothing to save");
             String text = "Nothing to save";
             int duration = Toast.LENGTH_SHORT;
-            Context context = getApplicationContext();
-            Toast toast = Toast.makeText(context, text, duration);
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
             toast.show();
         }
     }
