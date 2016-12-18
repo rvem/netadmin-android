@@ -44,10 +44,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new ComputerAdapter(this));
+        ComputerAdapter adapter = new ComputerAdapter(this);
+        adapter.setComputers(devices);
+        recyclerView.setAdapter(adapter);
     }
 
     public void onScanClick(View view) {
+        final String TAG = "On scan click ";
         class Scan implements Runnable {
 
             private Scan(){};
@@ -62,14 +65,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         scannedDevices.add(new Computer(num, basicIP + Integer.toString(i), "basic name", Color.GOOD));
                     }
                 }
-                devices = scannedDevices;
-                ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
-                adapter.setComputers(devices);
-                recyclerView.setAdapter(adapter);
+                if (devices.isEmpty()) {
+                    Log.d(TAG, "Computers in network not found");
+                    String text = "Computers in network not found";
+                    int duration = Toast.LENGTH_SHORT;
+                    Context context = getApplicationContext();
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                } else {
+                    devices = scannedDevices;
+                    ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
+                    adapter.setComputers(devices);
+                    recyclerView.setAdapter(adapter);
+                }
             }
         }
 
-        final String TAG = "On scan click ";
         new Thread(new Scan()).start();
     }
 
@@ -79,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         File configFile = new File(getFilesDir(), FILENAME);
         if (configFile.exists()) {
             devices = ConfigUtils.getConfig(configFile);
+            ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
+            adapter.setComputers(devices);
+            recyclerView.setAdapter(adapter);
         } else {
             Log.d(TAG, "Config file not found");
             String text = "Config file not found";
@@ -104,22 +118,32 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
+        final String TAG = "On swipe ";
         swipe.setRefreshing(true);
 
         swipe.postDelayed(new Runnable() {
             @Override
             public void run() {
-                for (Computer device : devices) {
-                    if (ping(device.getIP())) {
-                        device.setState(State.ONLINE);
-                    } else {
-                        device.setState(State.OFFLINE);
+                if (devices.isEmpty()) {
+                    Log.d(TAG, "Computers in network not found");
+                    String text = "Computers in network not found";
+                    int duration = Toast.LENGTH_SHORT;
+                    Context context = getApplicationContext();
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                } else {
+                    for (Computer device : devices) {
+                        if (ping(device.getIP())) {
+                            device.setState(State.ONLINE);
+                        } else {
+                            device.setState(State.OFFLINE);
+                        }
                     }
+                    ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
+                    adapter.setComputers(devices);
+                    recyclerView.setAdapter(adapter);
+                    swipe.setRefreshing(false);
                 }
-                ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
-                adapter.setComputers(devices);
-                recyclerView.setAdapter(adapter);
-                swipe.setRefreshing(false);
             }
         }, 3000);
 
