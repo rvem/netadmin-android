@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         scannedDevices.add(new Computer(num, basicIP + Integer.toString(i), "basic name"));
                     }
                 }
+                Log.d(TAG, Integer.toString(scannedDevices.size()));
                 if (!scannedDevices.isEmpty()) {
                     devices = scannedDevices;
                 }
@@ -87,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             toast.show();
         } else {
             adapter.setComputers(devices);
+            ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
+            adapter.setComputers(devices);
+            recyclerView.setAdapter(adapter);
         }
 
     }
