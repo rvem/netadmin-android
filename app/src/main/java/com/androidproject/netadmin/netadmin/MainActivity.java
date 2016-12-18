@@ -17,6 +17,7 @@ import com.androidproject.netadmin.netadmin.model.Computer;
 
 import java.io.File;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import static com.androidproject.netadmin.netadmin.Utils.NetworkUtils.ping;
@@ -64,8 +65,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
                 for (int i = 1; i < 255; i++) {
-                    if (ping(basicIP + Integer.toString(i))) {
-                        scannedDevices.add(new Computer(num, basicIP + Integer.toString(i), "basic name"));
+                    String ip = basicIP + Integer.toString(i);
+                    if (ping(ip)) {
+                        String name;
+                        try {
+                            InetAddress addr = InetAddress.getByName(ip);
+                            name = addr.getCanonicalHostName();
+                        } catch (UnknownHostException e) {
+                            name = "invalid name";
+                        }
+                        scannedDevices.add(new Computer(num++, basicIP + Integer.toString(i), name));
                     }
                 }
                 Log.d(TAG, Integer.toString(scannedDevices.size()));
@@ -93,10 +102,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
 
     public void onGetClick(View view) {
+
         final String TAG = "On get click ";
         File configFile = new File(getFilesDir(), FILENAME);
         if (configFile.exists()) {
             devices = ConfigUtils.getConfig(configFile);
+            Log.d(TAG, "devices size " + Integer.toString(devices.size()));
             adapter.setComputers(devices);
         } else {
             Log.d(TAG, "Config file not found");
@@ -116,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(getApplicationContext(), text, duration);
             toast.show();
+        } else {
+            ConfigUtils.setConfig(devices, configFile);
         }
     }
 
