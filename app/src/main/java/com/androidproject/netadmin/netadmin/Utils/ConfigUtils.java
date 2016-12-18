@@ -38,9 +38,11 @@ public final class ConfigUtils {
         try {
             FileWriter writer = new FileWriter(file);
             for (Computer device : devices) {
-                String info = Integer.toString(device.getId()) + " " + device.getIP() + '\n';
+                String info = Integer.toString(device.getId()) + " " + device.getIP() + " " + device.getName() + '\n';
+                Log.d(TAG, "save info: " + info);
                 writer.write(info);
             }
+            writer.close();
         } catch (Exception e) {
             Log.e(TAG, "catch exception", e);
         }
