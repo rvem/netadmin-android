@@ -100,6 +100,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     }
 
+    class Update implements Runnable {
+
+        private Update(){};
+
+        @Override
+        public void run() {
+            for (Computer device : devices) {
+                if (ping(device.getIP())) {
+                    device.setState(State.ONLINE);
+                } else {
+                    device.setState(State.OFFLINE);
+                }
+            }
+        }
+    }
+
 
     public void onGetClick(View view) {
 
@@ -108,7 +124,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         if (configFile.exists()) {
             devices = ConfigUtils.getConfig(configFile);
             Log.d(TAG, "devices size " + Integer.toString(devices.size()));
-            adapter.setComputers(devices);
+            Thread thread = new Thread(new Update());
+            thread.start();
+
+            while (thread.isAlive());
+            if (!devices.isEmpty()) {
+                adapter.setComputers(devices);
+            }
         } else {
             Log.d(TAG, "Config file not found");
             String text = "Config file not found";
@@ -146,24 +168,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     Toast toast = Toast.makeText(getApplicationContext(), text, duration);
                     toast.show();
                 } else {
-
-                    class Scan implements Runnable {
-
-                        private Scan(){};
-
-                        @Override
-                        public void run() {
-                            for (Computer device : devices) {
-                                if (ping(device.getIP())) {
-                                    device.setState(State.ONLINE);
-                                } else {
-                                    device.setState(State.OFFLINE);
-                                }
-                            }
-                        }
-                    }
-
-                    Thread thread = new Thread(new Scan());
+                    Thread thread = new Thread(new Update());
                     thread.start();
 
                     while (thread.isAlive());
