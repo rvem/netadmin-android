@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.androidproject.netadmin.netadmin.Utils.ConfigUtils;
@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private SwipeRefreshLayout swipe;
 
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         devices = new ArrayList<>();
@@ -39,6 +41,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         swipe = (SwipeRefreshLayout) findViewById(R.id.refresh);
         swipe.setOnRefreshListener(this);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new ComputerAdapter(this));
     }
 
     public void onScanClick(View view) {
@@ -57,8 +63,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     }
                 }
                 devices = scannedDevices;
+                ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
+                adapter.setComputers(devices);
+                recyclerView.setAdapter(adapter);
             }
         }
+
         final String TAG = "On scan click ";
         new Thread(new Scan()).start();
     }
@@ -106,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         device.setState(State.OFFLINE);
                     }
                 }
+                ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
+                adapter.setComputers(devices);
+                recyclerView.setAdapter(adapter);
                 swipe.setRefreshing(false);
             }
         }, 3000);

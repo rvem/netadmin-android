@@ -54,4 +54,6 @@ public class Computer {
         return this.state;
     }
 
+    public Color getColor() {return this.color; }
+
 }
