@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 int num = 1;
                 for (int i = 1; i < 255; i++) {
                     if (ping(basicIP + Integer.toString(i))) {
-                        scannedDevices.add(new Computer(num, basicIP + Integer.toString(i), "basic name", Color.GOOD));
+                        scannedDevices.add(new Computer(num, basicIP + Integer.toString(i), "basic name"));
                     }
                 }
                 if (!scannedDevices.isEmpty()) {
