@@ -60,19 +60,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 String basicIP = "192.168.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
-                for (int i = 1; i < 256; i++) {
+                for (int i = 1; i < 255; i++) {
                     if (ping(basicIP + Integer.toString(i))) {
                         scannedDevices.add(new Computer(num, basicIP + Integer.toString(i), "basic name", Color.GOOD));
                     }
                 }
-                if (devices.isEmpty()) {
-                    Log.d(TAG, "Computers in network not found");
-                    String text = "Computers in network not found";
-                    int duration = Toast.LENGTH_SHORT;
-                    Context context = getApplicationContext();
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
-                } else {
+                if (!devices.isEmpty()) {
                     devices = scannedDevices;
                     ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
                     adapter.setComputers(devices);
@@ -81,7 +74,19 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }
         }
 
-        new Thread(new Scan()).start();
+        Thread thread = new Thread(new Scan());
+        thread.start();
+
+        while (thread.isAlive());
+        if (devices.isEmpty()) {
+            Log.d(TAG, "Computers in network not found");
+            String text = "Not find computers in network";
+            int duration = Toast.LENGTH_SHORT;
+            Context context = getApplicationContext();
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+
     }
 
 
@@ -132,17 +137,28 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                 } else {
-                    for (Computer device : devices) {
-                        if (ping(device.getIP())) {
-                            device.setState(State.ONLINE);
-                        } else {
-                            device.setState(State.OFFLINE);
+
+                    class Scan implements Runnable {
+
+                        private Scan(){};
+
+                        @Override
+                        public void run() {
+                            for (Computer device : devices) {
+                                if (ping(device.getIP())) {
+                                    device.setState(State.ONLINE);
+                                } else {
+                                    device.setState(State.OFFLINE);
+                                }
+                            }
+                            ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
+                            adapter.setComputers(devices);
+                            recyclerView.setAdapter(adapter);
+                            swipe.setRefreshing(false);
                         }
                     }
-                    ComputerAdapter adapter = new ComputerAdapter(recyclerView.getContext());
-                    adapter.setComputers(devices);
-                    recyclerView.setAdapter(adapter);
-                    swipe.setRefreshing(false);
+
+                    new Thread(new Scan()).start();
                 }
             }
         }, 3000);
