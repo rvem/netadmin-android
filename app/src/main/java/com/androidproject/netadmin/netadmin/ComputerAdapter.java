@@ -65,7 +65,7 @@ public class ComputerAdapter extends RecyclerView.Adapter<ComputerAdapter.Comput
     @Override
     public void onBindViewHolder(ComputerViewHolder holder, int position) {
         final Computer computer = devices.get(position);
-        holder.numberView.setText(computer.getId());
+        holder.numberView.setText(Integer.toString(computer.getId()));
         holder.nameView.setText(computer.getName());
         holder.ipView.setText(computer.getIP());
         State state = computer.getState();
