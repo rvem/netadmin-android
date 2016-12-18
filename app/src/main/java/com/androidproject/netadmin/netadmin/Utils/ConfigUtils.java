@@ -26,7 +26,7 @@ public final class ConfigUtils {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] args = line.split(" ");
-                devices.add(new Computer(Integer.parseInt(args[0]), args[1], args[2], Color.GOOD));
+                devices.add(new Computer(Integer.parseInt(args[0]), args[1], args[2]));
             }
         } catch (Exception e) {
             Log.e(TAG, "catch exception", e);

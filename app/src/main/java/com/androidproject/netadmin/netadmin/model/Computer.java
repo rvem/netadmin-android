@@ -17,12 +17,8 @@ public class Computer {
     private Color color;
 
 
-    public Computer(int id, String ip, String name, Color color) {
-        this(id, ip, name, State.OFFLINE, color);
-    }
-
     public Computer(int id, String ip, String name) {
-        this(id, ip, name, State.OFFLINE, Color.BAD);
+        this(id, ip, name, State.ONLINE, Color.GOOD);
     }
 
     public Computer(int id, String ip, String name, State state, Color color) {
