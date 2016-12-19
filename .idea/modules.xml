@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Netadmin.iml" filepath="$PROJECT_DIR$/Netadmin.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/netadmin-android.iml" filepath="$PROJECT_DIR$/netadmin-android.iml" />
     </modules>
   </component>
 </project>
