@@ -1,6 +1,7 @@
 package com.androidproject.netadmin.netadmin;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         devices = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -50,6 +52,74 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         adapter = new ComputerAdapter(this);
         adapter.setComputers(devices);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<String> names = new ArrayList<String>(devices.size());
+        ArrayList<String> ip = new ArrayList<String>(devices.size());
+        ArrayList<Integer> num = new ArrayList<Integer>(devices.size());
+        ArrayList<String> state = new ArrayList<String>(devices.size());
+        ArrayList<String> color = new ArrayList<String>(devices.size());
+        int ind = 0;
+        for (Computer device : devices) {
+            names.add(ind, device.getName());
+            ip.add(ind, device.getIP());
+            num.add(ind, device.getId());
+            state.add(ind, device.getState().toString());
+            color.add(ind, device.getColor().toString());
+            ind++;
+        }
+        outState.putStringArrayList("name", names);
+        outState.putStringArrayList("ip", ip);
+        outState.putStringArrayList("state", state);
+        outState.putStringArrayList("color", color);
+        outState.putIntegerArrayList("num", num);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState == null) {
+            return;
+        }
+
+        ArrayList<String> names = savedInstanceState.getStringArrayList("name");
+        ArrayList<String> ip = savedInstanceState.getStringArrayList("ip");
+        ArrayList<Integer> num = savedInstanceState.getIntegerArrayList("num");
+        ArrayList<String> states = savedInstanceState.getStringArrayList("state");
+        ArrayList<String> colors = savedInstanceState.getStringArrayList("color");
+        int ind = 0;
+        ArrayList<Computer> add = new ArrayList<Computer>();
+        for (Integer id : num) {
+            String nameState = states.get(ind);
+            State state = (nameState == "ONLINE") ? State.ONLINE : State.OFFLINE;
+            String nameColor = colors.get(ind);
+            Color color = null;
+            switch (nameColor) {
+                case "GOOD":
+                    color = Color.GOOD;
+                    break;
+                case "BAD":
+                    color = Color.BAD;
+                    break;
+                case "FAIL":
+                    color = Color.FAIL;
+                    break;
+                case "WAIT":
+                    color = Color.WAIT;
+                    break;
+            }
+
+            add.add(new Computer(id, ip.get(ind), names.get(ind), state, color));
+            ind++;
+        }
+        devices = add;
+        adapter = new ComputerAdapter(this);
+        adapter.setComputers(devices);
+        recyclerView.setAdapter(adapter);
+
     }
 
     public void onScanClick(View view) {
@@ -100,6 +170,22 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     }
 
+    class Update implements Runnable {
+
+        private Update(){};
+
+        @Override
+        public void run() {
+            for (Computer device : devices) {
+                if (ping(device.getIP())) {
+                    device.setState(State.ONLINE);
+                } else {
+                    device.setState(State.OFFLINE);
+                }
+            }
+        }
+    }
+
 
     public void onGetClick(View view) {
 
@@ -108,7 +194,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         if (configFile.exists()) {
             devices = ConfigUtils.getConfig(configFile);
             Log.d(TAG, "devices size " + Integer.toString(devices.size()));
-            adapter.setComputers(devices);
+            Thread thread = new Thread(new Update());
+            thread.start();
+
+            while (thread.isAlive());
+            if (!devices.isEmpty()) {
+                adapter.setComputers(devices);
+            }
         } else {
             Log.d(TAG, "Config file not found");
             String text = "Config file not found";
@@ -146,24 +238,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     Toast toast = Toast.makeText(getApplicationContext(), text, duration);
                     toast.show();
                 } else {
-
-                    class Scan implements Runnable {
-
-                        private Scan(){};
-
-                        @Override
-                        public void run() {
-                            for (Computer device : devices) {
-                                if (ping(device.getIP())) {
-                                    device.setState(State.ONLINE);
-                                } else {
-                                    device.setState(State.OFFLINE);
-                                }
-                            }
-                        }
-                    }
-
-                    Thread thread = new Thread(new Scan());
+                    Thread thread = new Thread(new Update());
                     thread.start();
 
                     while (thread.isAlive());
