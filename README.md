@@ -19,3 +19,6 @@ NetAdmin -- приложение для Android, являющееся мобил
 * Отправить на все компьютеры свои конфигурации
 
 * Сохранить текущую конфигурацию
+
+![Скриншот экрана](https://github.com/Zlok/netadmin-android/raw/master/Screenshots/screenshot_web_work.jpg)
+
