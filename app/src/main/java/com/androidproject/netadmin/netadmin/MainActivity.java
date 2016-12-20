@@ -144,11 +144,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             protected ArrayList<Computer> doInBackground(Void... params) {
                 onScanProcess = true;
-                String basicIP = "192.168.1.";
-//                String basicIP = "127.0.0.";
+//                String basicIP = "192.168.1.";
+                String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
-                for (int i = 1; i < 255; i++) {
+                for (int i = 1; i < 2; i++) {
                     String ip = basicIP + Integer.toString(i);
                     if (ping(ip)) {
                         String name;
@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             Toast toast = Toast.makeText(getApplicationContext(), text, duration);
             toast.show();
         }
+        this.devices = devices;
         adapter.setComputers(devices);
     }
 
@@ -234,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onSaveClick(View view) {
         final String TAG = "On save click ";
         File configFile = new File(getFilesDir(), FILENAME);
+        Log.d(TAG, Integer.toString(devices.size()));
         if (devices.isEmpty()) {
             Log.d(TAG, "Nothing to save");
             String text = "Nothing to save";
