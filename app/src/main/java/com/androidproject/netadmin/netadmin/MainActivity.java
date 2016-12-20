@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     public void onScanClick(View view) {
+        boolean onProcess;
         final String TAG = "On scan click ";
         class Scan implements Runnable {
 
@@ -141,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                         try {
                             InetAddress addr = InetAddress.getByName(ip);
                             name = addr.getCanonicalHostName();
+                            if (name.equals(ip)) {
+                                name = "--";
+                            }
                         } catch (UnknownHostException e) {
                             name = "invalid name";
                         }
