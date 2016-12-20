@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private ComputerAdapter adapter = null;
 
+    private boolean onScanProcess;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -129,14 +131,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onScanClick(View view) {
         class Scanner extends AsyncTask<Void, Void, ArrayList<Computer>> {
             final String TAG = "Scanner ";
-            
+
             @Override
             protected void onPostExecute(ArrayList<Computer> result) {
                 setDevices(result);
+                onScanProcess = false;
             }
 
             @Override
             protected ArrayList<Computer> doInBackground(Void... params) {
+                onScanProcess = true;
                 String basicIP = "192.168.1.";
 //                String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
@@ -163,7 +167,14 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         }
         recyclerView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-        new Scanner().execute();
+        if (onScanProcess) {
+            String text = "Scanning in process";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.show();
+        } else {
+            new Scanner().execute();
+        }
     }
 
     private void setDevices(ArrayList<Computer> devices) {
