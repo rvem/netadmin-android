@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         ArrayList<Integer> num = new ArrayList<Integer>(devices.size());
         ArrayList<String> state = new ArrayList<String>(devices.size());
         ArrayList<String> color = new ArrayList<String>(devices.size());
+
         int ind = 0;
         for (Computer device : devices) {
             names.add(ind, device.getName());
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             color.add(ind, device.getColor().toString());
             ind++;
         }
+        outState.putInt("progressState", progressBar.getVisibility());
         outState.putStringArrayList("name", names);
         outState.putStringArrayList("ip", ip);
         outState.putStringArrayList("state", state);
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         ArrayList<Integer> num = savedInstanceState.getIntegerArrayList("num");
         ArrayList<String> states = savedInstanceState.getStringArrayList("state");
         ArrayList<String> colors = savedInstanceState.getStringArrayList("color");
+        progressBar.setVisibility(savedInstanceState.getInt("progressState"));
         int ind = 0;
         ArrayList<Computer> add = new ArrayList<Computer>();
         for (Integer id : num) {
@@ -141,11 +144,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             protected ArrayList<Computer> doInBackground(Void... params) {
                 onScanProcess = true;
-                String basicIP = "192.168.1.";
-//                String basicIP = "127.0.0.";
+//                String basicIP = "192.168.1.";
+                String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
-                for (int i = 1; i < 255; i++) {
+                for (int i = 1; i < 2; i++) {
                     String ip = basicIP + Integer.toString(i);
                     if (ping(ip)) {
                         String name;
@@ -179,8 +182,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void setDevices(ArrayList<Computer> devices) {
         progressBar.setVisibility(View.INVISIBLE);
-        adapter.setComputers(devices);
         recyclerView.setVisibility(View.VISIBLE);
+        if (devices.isEmpty()) {
+            String text = "Can't find any devices";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getApplicationContext(), text, duration);
+            toast.show();
+        }
+        this.devices = devices;
+        adapter.setComputers(devices);
     }
 
     class Updater extends AsyncTask<ArrayList<Computer>, Void, ArrayList<Computer>> {
@@ -225,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onSaveClick(View view) {
         final String TAG = "On save click ";
         File configFile = new File(getFilesDir(), FILENAME);
+        Log.d(TAG, Integer.toString(devices.size()));
         if (devices.isEmpty()) {
             Log.d(TAG, "Nothing to save");
             String text = "Nothing to save";
