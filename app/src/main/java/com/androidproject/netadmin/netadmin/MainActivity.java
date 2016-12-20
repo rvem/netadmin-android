@@ -129,11 +129,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onScanClick(View view) {
         class Scanner extends AsyncTask<Void, Void, ArrayList<Computer>> {
             final String TAG = "Scanner ";
-
-            protected void onPreExecute() {
-                // TODO: 20.12.16 вот тут попробовать отобразить прогресс бар
-            }
-
+            
             @Override
             protected void onPostExecute(ArrayList<Computer> result) {
                 setDevices(result);
