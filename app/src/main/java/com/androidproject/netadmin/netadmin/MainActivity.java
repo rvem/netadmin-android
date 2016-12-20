@@ -144,11 +144,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             protected ArrayList<Computer> doInBackground(Void... params) {
                 onScanProcess = true;
-//                String basicIP = "192.168.1.";
-                String basicIP = "127.0.0.";
+                String basicIP = "192.168.1.";
+//                String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
-                for (int i = 1; i < 2; i++) {
+                for (int i = 1; i < 255; i++) {
                     String ip = basicIP + Integer.toString(i);
                     if (ping(ip)) {
                         String name;
