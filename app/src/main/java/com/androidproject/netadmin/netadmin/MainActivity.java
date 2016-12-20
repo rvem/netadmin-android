@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     public void onScanClick(View view) {
+        boolean onProcess;
         final String TAG = "On scan click ";
         class Scan implements Runnable {
 
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                             InetAddress addr = InetAddress.getByName(ip);
                             name = addr.getCanonicalHostName();
                             if (name.equals(ip)) {
-                                name = "";
+                                name = "--";
                             }
                         } catch (UnknownHostException e) {
                             name = "invalid name";
@@ -170,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         } else {
             adapter.setComputers(devices);
         }
-        thread.suspend();
 
     }
 
@@ -205,7 +205,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             if (!devices.isEmpty()) {
                 adapter.setComputers(devices);
             }
-            thread.suspend();
         } else {
             Log.d(TAG, "Config file not found");
             String text = "Config file not found";
