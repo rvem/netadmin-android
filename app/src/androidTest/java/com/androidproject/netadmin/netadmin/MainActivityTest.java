@@ -1,5 +1,6 @@
 package com.androidproject.netadmin.netadmin;
 
+import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
@@ -7,6 +8,7 @@ import android.test.TouchUtils;
 import android.test.ViewAsserts;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -14,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import junit.framework.Test;
+
+import java.util.ArrayList;
 
 /**
  * Created by appolinariya on 20.12.16.
@@ -25,9 +29,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
     private MainActivity mainActivity;
     private Button scan, save, get;
     private SwipeRefreshLayout refresh;
-    private LinearLayout items;
+    private LinearLayout item;
     private TextView number, name, ip, state;
     private ProgressBar progress;
+    private RecyclerView recyclerView;
+
     public void testCreatedMenu() throws Exception {
         assertNotNull(mainActivity);
         assertNotNull(scan);
@@ -43,19 +49,40 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 
     public void testScan() throws Exception {
         TouchUtils.clickView(this, scan);
-
-        //progress = mainActivity.findViewById(R.id.progress);
-//        assertNotNull(progress);
+        RecyclerView.Adapter adapter = (RecyclerView.Adapter) recyclerView.getAdapter();
+        assertNotNull(adapter);
+        item = (LinearLayout) mainActivity.findViewById(R.id.Items);
+        assertNotNull(item);
+        number = (TextView) item.findViewById(R.id.Number);
+        name = (TextView) item.findViewById(R.id.Name);
+        ip = (TextView) item.findViewById(R.id.IP);
+        state = (TextView) item.findViewById(R.id.State);
+        assertNotNull(number);
+        assertNotNull(name);
+        assertNotNull(ip);
+        assertNotNull(state);
     }
 
-/*    public void testSave() throws Exception {
-
+    public void testSave() throws Exception {
+        TouchUtils.clickView(this, save);
     }
 
     public void testGet() throws Exception {
-
+        TouchUtils.clickView(this, get);
+        RecyclerView.Adapter adapter = (RecyclerView.Adapter) recyclerView.getAdapter();
+        assertNotNull(adapter);
+        item = (LinearLayout) mainActivity.findViewById(R.id.Items);
+        assertNotNull(item);
+        number = (TextView) item.findViewById(R.id.Number);
+        name = (TextView) item.findViewById(R.id.Name);
+        ip = (TextView) item.findViewById(R.id.IP);
+        state = (TextView) item.findViewById(R.id.State);
+        assertNotNull(number);
+        assertNotNull(name);
+        assertNotNull(ip);
+        assertNotNull(state);
     }
-*/
+
     public MainActivityTest() {
         super(MainActivity.class);
     }
@@ -68,12 +95,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         save = (Button) mainActivity.findViewById(R.id.saveButton);
         get = (Button) mainActivity.findViewById(R.id.getButton);
         refresh = (SwipeRefreshLayout) mainActivity.findViewById(R.id.refresh);
-        items = (LinearLayout) mainActivity.findViewById(R.id.Items);
-        number = (TextView) mainActivity.findViewById(R.id.Number);
-        name = (TextView) mainActivity.findViewById(R.id.Name);
-        ip = (TextView) mainActivity.findViewById(R.id.IP);
-        state = (TextView) mainActivity.findViewById(R.id.State);
         progress = (ProgressBar) mainActivity.findViewById(R.id.progress);
+        recyclerView = (RecyclerView) mainActivity.findViewById(R.id.recycler);
     }
 
     @Override
