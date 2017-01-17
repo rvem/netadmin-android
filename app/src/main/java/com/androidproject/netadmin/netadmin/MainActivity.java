@@ -1,15 +1,18 @@
 package com.androidproject.netadmin.netadmin;
 
 import android.content.pm.ActivityInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidproject.netadmin.netadmin.Utils.ConfigUtils;
@@ -21,6 +24,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.androidproject.netadmin.netadmin.Utils.NetworkUtils.ping;
 
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private RecyclerView recyclerView;
 
     private ProgressBar progressBar;
+    private TextView textView;
 
     private ComputerAdapter adapter = null;
 
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipe.setOnRefreshListener(this);
         progressBar = (ProgressBar) findViewById(R.id.progress);
         progressBar.setVisibility(View.INVISIBLE);
+        textView = (TextView) findViewById(R.id.scannState);
+        textView.setVisibility(View.INVISIBLE);
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ComputerAdapter(this);
@@ -99,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         ArrayList<String> states = savedInstanceState.getStringArrayList("state");
         ArrayList<String> colors = savedInstanceState.getStringArrayList("color");
         progressBar.setVisibility(savedInstanceState.getInt("progressState"));
+        textView.setVisibility(savedInstanceState.getInt("progressState"));
         int ind = 0;
         ArrayList<Computer> add = new ArrayList<Computer>();
         for (Integer id : num) {
@@ -144,12 +152,29 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             protected ArrayList<Computer> doInBackground(Void... params) {
                 onScanProcess = true;
-                String basicIP = "192.168.1.";
+                WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+                String localIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                String basicIP = "";
+                int index = 0, flag_point = 0;
+                while (flag_point != 3) {
+                    basicIP = basicIP + localIP.charAt(index);
+                    if (localIP.charAt(index) == '.')
+                        flag_point++;
+                    index++;
+                }
+//                String basicIP = "192.168.1.";
 //                String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
                 for (int i = 1; i < 255; i++) {
                     String ip = basicIP + Integer.toString(i);
+                    final String Sc = "Scanned " + Integer.toString(i) + " of 256";
+                    textView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.setText(Sc);
+                        }
+                    });
                     if (ping(ip)) {
                         String name;
                         try {
@@ -170,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         }
         recyclerView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
         if (onScanProcess) {
             String text = "Scanning in process";
             int duration = Toast.LENGTH_SHORT;
@@ -181,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     }
 
     private void setDevices(ArrayList<Computer> devices) {
+        textView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         if (devices.isEmpty()) {
@@ -213,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             return devices;
         }
     }
-
 
     public void onGetClick(View view) {
 

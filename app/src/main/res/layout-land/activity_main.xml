@@ -102,6 +102,14 @@ android:weightSum="1">
                     android:layout_centerInParent="true"
                     android:layout_width="80dp"
                     android:layout_height="80dp" />
+
+                <TextView
+                    android:text="Scanned 0 of 256"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/scannState" />
             </RelativeLayout>
 
 
