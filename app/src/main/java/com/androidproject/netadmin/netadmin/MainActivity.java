@@ -1,12 +1,14 @@
 package com.androidproject.netadmin.netadmin;
 
 import android.content.pm.ActivityInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static com.androidproject.netadmin.netadmin.Utils.NetworkUtils.ping;
 
@@ -144,7 +147,17 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             protected ArrayList<Computer> doInBackground(Void... params) {
                 onScanProcess = true;
-                String basicIP = "192.168.1.";
+                 WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+                String localIP = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+                String basicIP = "";
+                int index = 0, flag_point = 0;
+                while (flag_point != 3) {
+                    basicIP = basicIP + localIP.charAt(index);
+                    if (localIP.charAt(index) == '.')
+                        flag_point++;
+                    index++;
+                }
+//                String basicIP = "192.168.1.";
 //                String basicIP = "127.0.0.";
                 ArrayList<Computer> scannedDevices = new ArrayList<>();
                 int num = 1;
@@ -213,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             return devices;
         }
     }
-
 
     public void onGetClick(View view) {
 
